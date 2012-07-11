@@ -47,7 +47,7 @@ fi
 
 BUILD_URL="$RELEASE_URL/$BUILD"
 
-COMMAND="svn cp $STABLE_URL $BUILD_URL -m '$MESSAGE_HEADER : Create release build $RELEASE-$BUILD'"
+COMMAND="svn cp -m '$MESSAGE_HEADER : Create release build $RELEASE-$BUILD' '$STABLE_URL' '$BUILD_URL'"
 
 echo
 echo "Ok, you are going to do this shit:"
@@ -65,7 +65,7 @@ while [ 1 ]; do
 	if [ "$DO_IT_MOTHER_FUCKER" = 'yes' ]; then
 		echo
 		echo "Hold on to your chair! Go..."
-		$COMMAND || exit -1
+		eval $COMMAND || exit -1
 		echo
 		exit 0
 	elif [ -z "$DO_IT_MOTHER_FUCKER" -o "$DO_IT_MOTHER_FUCKER" = 'no' ]; then
