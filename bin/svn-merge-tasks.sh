@@ -43,9 +43,12 @@ echo >> commit-message.txt
 
 svn up
 
-TASKS=`echo "$TASKS" | sed -e 's/,/|/'`
+TASKS=`echo "$TASKS" | sed -e 's/,/|/g' | sed -e 's/ //g'`
 
-svn log -l 100 "$SOURCE" | grep -E "^($TASKS)" -B2 | awk -F '|' ' NR%4==1 {system("echo -n " $1 " >> commit-message.txt "); rev=substr($1,2); print rev;} NR%4==3 {system("echo \" \"" $0 " >> commit-message.txt");}' | sort -n | xargs -Irev svn merge --non-interactive -c rev $SOURCE
+svn log -l 100 "$SOURCE" | grep -E "^($TASKS)" -B2 | awk -F '|' '
+	NR%4==1 {system("echo -n " $1 " >> commit-message.txt "); rev=substr($1,2); print rev;} 
+	NR%4==3 {system("echo \" " $0 "\" >> commit-message.txt");}
+' | sort -n | xargs -Irev svn merge --non-interactive -c rev $SOURCE
 
 echo
 echo "COMMIT MESSAGE"
@@ -54,7 +57,6 @@ cat commit-message.txt
 echo
 
 COMMIT_COMMAND="svn ci -F commit-message.txt"
-
 
 echo "COMMIT COMMAND"
 echo
