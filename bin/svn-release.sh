@@ -37,10 +37,12 @@ RELEASE_DIR=`svn ls $RELEASE_BASE | grep -E "^$RELEASE/"`
 
 if [ -z $RELEASE_DIR ]; then
 	svn mkdir -m "$MESSAGE_HEADER : Create dir for release $RELEASE" $RELEASE_URL || exit -1
-	BUILD_URL="$RELEASE_URL/01"
+	# Билды начинаем с первого
+	BUILD="01"
 else
 	# Получаем номер крайнего билда в релизе и увеичиваем на 1
 	BUILD=`svn ls $RELEASE_URL | grep -E '[0-9]{2}/' | tail -1 | colrm 3`
+	BUILD=${BUILD:-0} # Значение по умолчанию, если билдов нет
 	BUILD=$((BUILD+1))
 	BUILD=`printf '%02d' $BUILD`
 fi
