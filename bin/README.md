@@ -7,6 +7,6 @@ Usage:
 
 - Run in the directory with WORKING_COPY in which you're merging.
 <pre> ./svn-merge-tasks.sh SQR-123,SQR-157,SQR-143 ^/trunk 'SQR-200 release build 2.2.1' </pre>
-where SQR's are tasks numbers and ^/trunk is the source.
+where SQRs are task numbers and ^/trunk is the source.
 
 
