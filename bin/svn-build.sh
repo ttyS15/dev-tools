@@ -32,7 +32,7 @@ RELEASE_URL="$RELEASE_BASE/$VERSION"
 # Получаем номер крайнего билда в релизе и увеичиваем на 1
 BUILD=`svn ls $RELEASE_URL | grep -E '[0-9]{2}/' | tail -1 | colrm 3`
 BUILD=${BUILD:-0} # Значение по умолчанию, если билдов нет
-BUILD=`printf '%02d' $BUILD`
+BUILD=`printf '%02s' $BUILD`
 BUILD_NAME="$PACKAGE_NAME-$BUILD"
 ARCHIVE_NAME="$BUILD_NAME.tgz"
 cd $WORKDIR

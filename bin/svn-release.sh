@@ -43,6 +43,7 @@ else
 	# Получаем номер крайнего билда в релизе и увеичиваем на 1
 	BUILD=`svn ls $RELEASE_URL | grep -E '[0-9]{2}/' | tail -1 | colrm 3`
 	BUILD=${BUILD:-0} # Значение по умолчанию, если билдов нет
+	BUILD="$(echo $BUILD | sed 's/^0*//')"
 	BUILD=$((BUILD+1))
 	BUILD=`printf '%02d' $BUILD`
 fi
