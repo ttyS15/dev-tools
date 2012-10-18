@@ -2,6 +2,14 @@
 ### svn-merge-tasks.sh
 - Script is searching for commits by tasks in JIRA and merge it all to WORKING_COPY.
 
+Install:
+
+<pre>make install</pre>
+
+- Note, this script will remove all that was in the old directory.
+
+After that, you need to set the PATH variable in your .bashrc or .bash_profile.
+<pre>export PATH=~/bin:$PATH</pre>
 
 Usage:
 
