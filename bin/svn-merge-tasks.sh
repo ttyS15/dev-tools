@@ -41,20 +41,41 @@ echo >> commit-message.txt
 echo "Request revisions from $SOURCE:" >> commit-message.txt
 echo >> commit-message.txt
 
+TASKS=`echo "$TASKS" | sed -e  's/ //g' | tr ',' '\n' | sort | uniq | xargs echo | tr ' ' '|'`
+
+if [ -z $TASKS ]; then
+	echo "No tasks requested. Cancel."
+	exit -1;
+fi
+
+svn revert .
 svn up
 
-TASKS=`echo "$TASKS" | sed -e 's/,/|/g' | sed -e 's/ //g'`
-
-svn log -l 100 "$SOURCE" | grep -E "^($TASKS)" -B2 | awk -F '|' '
-	NR%4==1 {system("echo -n " $1 " >> commit-message.txt "); rev=substr($1,2); print rev;} 
-	NR%4==3 {system("echo \" " $0 "\" >> commit-message.txt");}
-' | sort -n | xargs -Irev svn merge --non-interactive -c rev $SOURCE
+svn log -l 100 "$SOURCE" | 
+	grep -E "^($TASKS)" -B2 | 
+	awk -F '|' '
+		NR%4==1 {system("echo -n " $1 " >> commit-message.txt "); rev=substr($1,2); print rev;} 
+		NR%4==3 {system("echo \" " $0 "\" >> commit-message.txt");}' | 
+	sort -n | 
+	xargs -Irev svn merge --non-interactive -c rev $SOURCE
 
 echo
 echo "COMMIT MESSAGE"
 echo 
 cat commit-message.txt
 echo
+
+# Проверяем, что все задачи попали в commit-message.txt
+COLLECTED_TASKS=`cat commit-message.txt | awk 'NR>3 {print $2}' | sort | uniq | xargs echo | tr ' ' '|'`
+
+if [ "$COLLECTED_TASKS" != "$TASKS" ]; then
+	echo "REQUESTED TASKS: '$TASKS'"
+	echo "COLLECTED TASKS: '$COLLECTED_TASKS'"
+	echo "Requested and collected tasks are not equal!"
+	echo "Check all commits in trunk are present."
+	echo "Operation is canceled."
+	exit -1;
+fi
 
 COMMIT_COMMAND="svn ci -F commit-message.txt"
 
